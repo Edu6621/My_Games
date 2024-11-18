@@ -1,0 +1,215 @@
+/*            Desafio: jogo do labirinto
+O objetivo deste desafio é estimular a criatividade e a fixação de conteúdo através da prática de
+programação.
+Em duplas, crie um jogo de labirinto simples para o terminal em que. O objetivo é mover um
+personagem do ponto de partida ao ponto de chegada em um labirinto 2D.
+Requisitos:
+
+    • As paredes do labirinto devem representadas pelo caractere ‘#’.
+    • O caminho do labirinto deve ser representado por ‘ ’ (um espaço entre aspas).
+    • O jogador deve ser representado pelo caractere 'P'.
+    • O ponto de chegada deve ser representado pelo caractere ‘E'.
+Exemplo:
+    
+    // Inicializa o labirinto
+char layout[5][5] = {
+{'P', '#', '#', '#', '#'},
+{' ', ' ', '#', ' ', '#'},
+{'#', ' ', '#', ' ', '#'},
+{'#', ' ', ' ', ' ', ' '},
+{'#', '#', '#', '#', 'E'}
+};
+
+    • A matriz do tabuleiro do labirinto deve ser alocada de forma dinâmica.
+    
+    • Permita que o jogador se mova usando as teclas 'w' (para cima), 'a' (para a esquerda), 's' (para baixo) e 'd'
+    (para a direita), reexibido o labirinto após cada movimento.
+    
+    • O jogo não deve permitir que o jogador atravesse as paredes do labirinto. Ele pode andar somente nos
+    espaços vazios e sobre o 'E'.
+    
+    • Verifique se o jogador chegou ao ponto de chegada (E) e, em caso afirmativo, termine o jogo com uma
+    mensagem de vitória.
+    
+    • Utilize a seguinte função para limpar a tela a cada movimentação do jogador:
+    void clearScreen() {
+// system("cls"); // funciona no windows
+for (int i = 0; i < 50; i++) { // gambiarra
+printf("\n");
+}
+}
+Prazo de entrega: 30/01/2025
+Peso: a definir     */
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <conio.h>
+void Para_Cima(char **layout, int *posicao_linha, int *posicao_coluna, int *vit){
+    if (layout[*posicao_linha-1][*posicao_coluna] == '#' || (*posicao_linha-1) < 0 || (*posicao_linha-1) > 19){
+        return;
+    }else{
+        if (layout[*posicao_linha-1][*posicao_coluna] == 'E'){
+            layout[*posicao_linha][*posicao_coluna] = ' ';
+            (*posicao_linha) --;
+            layout[*posicao_linha][*posicao_coluna] = 'P';
+            *vit = 1;
+            return;
+        }
+        layout[*posicao_linha][*posicao_coluna] = ' ';
+        (*posicao_linha) --;
+        layout[*posicao_linha][*posicao_coluna] = 'P';
+    }
+}
+void Para_Esquerda(char **layout, int *posicao_linha, int *posicao_coluna, int *vit){
+    if (layout[*posicao_linha][*posicao_coluna-1] == '#' || (*posicao_coluna-1) < 0 || (*posicao_coluna-1) > 19){
+        return;
+    }else{
+        if (layout[*posicao_linha][*posicao_coluna-1] == 'E'){
+            layout[*posicao_linha][*posicao_coluna] = ' ';
+            (*posicao_coluna) --;
+            layout[*posicao_linha][*posicao_coluna] = 'P';
+            *vit = 1;
+            return;
+        }
+        layout[*posicao_linha][*posicao_coluna] = ' ';
+        (*posicao_coluna) --;
+        layout[*posicao_linha][*posicao_coluna] = 'P';
+    }
+}
+void Para_Baixo(char **layout, int *posicao_linha, int *posicao_coluna, int *vit){
+    if (layout[*posicao_linha+1][*posicao_coluna] == '#' || (*posicao_linha+1) < 0 || (*posicao_linha+1) > 19){
+        return;
+    }else{
+        if (layout[*posicao_linha+1][*posicao_coluna] == 'E'){
+            layout[*posicao_linha][*posicao_coluna] = ' ';
+            (*posicao_linha) ++;
+            layout[*posicao_linha][*posicao_coluna] = 'P';
+            *vit = 1;
+            return;
+        }
+        layout[*posicao_linha][*posicao_coluna] = ' ';
+        (*posicao_linha) ++;
+        layout[*posicao_linha][*posicao_coluna] = 'P';
+    }
+}
+void Para_Direita(char **layout, int *posicao_linha, int *posicao_coluna, int *vit){
+    if (layout[*posicao_linha][*posicao_coluna+1] == '#' || (*posicao_coluna+1) <0 || (*posicao_coluna+1) > 19){
+        return;
+    }else{
+        if (layout[*posicao_linha][*posicao_coluna+1] == 'E'){
+            layout[*posicao_linha][*posicao_coluna] = ' ';
+            (*posicao_coluna) ++;
+            layout[*posicao_linha][*posicao_coluna] = 'P';
+            *vit = 1;
+            return;
+        }
+        layout[*posicao_linha][*posicao_coluna] = ' ';
+        (*posicao_coluna) ++;
+        layout[*posicao_linha][*posicao_coluna] = 'P';
+    }
+}
+void Limpar_Tela() {
+    #ifdef _WIN32
+        system("cls"); 
+    #else
+        system("clear"); 
+    #endif
+}
+void Apresentar_Layout (char **layout){
+    printf ("   JOGO DO LABIRINTO\n\n");
+    for (int i=0; i<20; i++){
+        printf ("       ");
+        for (int j=0; j<20; j++){
+            printf ("%c ", layout[i][j]);
+        }
+        printf ("\n");
+    }
+}
+
+void Movimentacao (char **layout, char comando, int* pl, int* pc, int* vit){
+    
+    switch (comando){
+        case 'w':
+            comando = 'w';
+            Para_Cima(layout, pl, pc, vit);
+            break;
+        case 'a':
+            comando = 'a';
+            Para_Esquerda(layout, pl, pc, vit);
+            break;
+        case 's':
+            comando = 's';
+            Para_Baixo(layout, pl, pc, vit);
+            break;
+        case 'd':
+            comando = 'd';
+            Para_Direita(layout, pl, pc, vit);
+            break;
+        default:
+            return;
+    }
+}
+int main () {
+    int vitoria = 0;
+    int *vit = &vitoria;
+    int posicao_linha = 0;
+    int posicao_coluna = 0;
+    int* pl = &posicao_linha;
+    int* pc = &posicao_coluna;
+    char comando = 'a';
+    
+    
+    char **layout = malloc (20 * sizeof(char*));
+    for (int i=0; i<20; i++){
+        layout[i] = malloc (20 * sizeof(char));
+    }
+    
+    char layoutinicial[20][20] = {
+    {'P', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+    {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+    {'#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', '#', ' ', '#', '#', ' ', '#'},
+    {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+    {'#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', '#'},
+    {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', '#', ' ', ' ', '#'},
+    {'#', '#', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', ' ', ' ', '#'},
+    {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
+    {'#', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', '#'},
+    {'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', '#'},
+    {'#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', '#', ' ', ' ', '#', ' ', '#'},
+    {'#', '#', ' ', '#', ' ', '#', '#', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', '#', ' ', '#'},
+    {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', '#', ' ', ' ', ' ', '#', '#'},
+    {'#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', ' ', '#', '#', ' ', '#', ' ', '#'},
+    {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', ' ', ' ', '#'},
+    {'#', ' ', '#', '#', '#', '#', '#', ' ', '#', '#', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', '#'},
+    {'#', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', ' ', ' ', '#'},
+    {'#', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', '#', ' ', '#', ' ', '#'},
+    {'#', '#', '#', ' ', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', 'E'},
+    {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'}
+};
+
+
+    
+    for (int i=0; i<20; i++){
+        for (int j=0; j<20; j++){
+            layout[i][j] = layoutinicial[i][j];
+        }
+    }
+    while (1){
+        Apresentar_Layout (layout);
+        
+        if (vitoria == 1){
+            printf ("\nPARABÉNS, VOCÊ VENCEU !!");
+            break;;
+        }
+        scanf ("%c", &comando);
+        
+        Movimentacao (layout, comando, pl, pc, vit);
+        Limpar_Tela ();
+        
+    }
+    for (int i=0; i<20; i++){
+        free (layout[i]);
+    }
+    free (layout);
+    return 0;
+}
