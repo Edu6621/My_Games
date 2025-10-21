@@ -1,0 +1,251 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <time.h>
+
+void movimento_inimigo(char** layout, int* il, int* ic, int* derrotou){
+    
+    while (1){
+        int sorteio2 = rand() % 4 + 1;
+
+        layout[*il][*ic] = ' ';
+        
+        switch (sorteio2){
+            case 1: //cima
+                if (layout[(*il)-1][(*ic)] == '#'|| layout[(*il)-1][(*ic)] == '*' || layout[(*il)-1][(*ic)] == '!'){
+                    break;
+                }else if (layout[(*il)-1][(*ic)] == 'O'){
+                    (*derrotou)++;
+                }    
+                (*il)--;
+                layout[*il][*ic] = '!';
+            return;
+            case 2://esquerda
+                if (layout[(*il)][(*ic)-1] == '#' || layout[(*il)][(*ic)-1] == '*' || layout[(*il)][(*ic)-1] == '!'){
+                    break;
+                }else if (layout[(*il)][(*ic)-1] == 'O'){
+                    (*derrotou)++;
+                }    
+                (*ic)--;
+                layout[*il][*ic] = '!';
+                return;
+            case 3://baixo
+                if (layout[(*il)+1][(*ic)] == '#' || layout[(*il)+1][(*ic)] == '*' || layout[(*il)+1][(*ic)] == '!'){
+                    break;
+                }
+                else if (layout[(*il)+1][(*ic)] == 'O'){
+                    (*derrotou)++;
+                }
+                (*il)++;
+                layout[*il][*ic] = '!';
+                return;
+            case 4://direita
+                if (layout[(*il)][(*ic)+1] == '#' || layout[(*il)][(*ic)+1] == '*' || layout[(*il)][(*ic)+1] == '!'){
+                    break;
+                }    
+                else if (layout[(*il)][(*ic)+1] == 'O'){
+                    (*derrotou)++;
+                }    
+                (*ic)++;
+                layout[*il][*ic] = '!';
+                return;
+            default:
+                break;                          
+        }
+    }
+}
+
+void limpar_tela() {
+#ifdef _WIN32
+    system("cls");  // Comando para Windows
+#else
+    system("clear"); // Comando para Linux/macOS
+#endif
+}
+void para_cima(char** layout, int* pl, int* pc, int* pontos){
+    if (layout[(*pl)-1][*pc] == '#'){
+    }else{
+        layout[*pl][*pc] = ' ';
+        if (layout[(*pl)-1][*pc] == '*'){
+            (*pontos)++;
+            printf ("\a");
+        }
+        (*pl)--;
+        layout[*pl][*pc] = 'O';
+    }
+}
+void para_esquerda(char** layout, int* pl, int* pc, int* pontos){
+    if (layout[*pl][(*pc)-1] == '#'){
+    }else{
+        layout[*pl][*pc] = ' ';
+        if (layout[*pl][(*pc)-1] == '*'){
+            (*pontos)++;
+            printf ("\a");
+        }
+        (*pc)--;
+        layout[*pl][*pc] = 'O';
+    }
+}
+void para_baixo(char** layout, int* pl, int* pc, int* pontos){
+    if (layout[(*pl)+1][*pc] == '#'){
+    }else{
+        layout[*pl][*pc] = ' ';
+        if (layout[(*pl)+1][*pc] == '*'){
+            (*pontos)++;
+            printf ("\a");
+        }
+        (*pl)++;
+        layout[*pl][*pc] = 'O';
+    }
+}
+void para_direita(char** layout, int* pl, int* pc, int* pontos){
+    if (layout[*pl][(*pc)+1] == '#'){
+    }else{
+        layout[*pl][*pc] = ' ';
+        if (layout[*pl][(*pc)+1] == '*'){
+            (*pontos)++;
+            printf ("\a");
+        }
+        (*pc)++;
+        layout[*pl][*pc] = 'O';
+    }
+}
+void inicializar_layout (char** layout){
+    const char mapa0[20][20] = {
+        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+        {'#', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', ' ', '#', '#', '#', '#', ' ', ' ', '#', '#', ' ', '#', '#', '#', '#', ' ', ' ', '#', ' ', '#'},
+        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '*', '#'},
+        {'#', ' ', '#', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#'},
+        {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', '!', '!', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#'},
+        {'#', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', ' ', '#'},
+        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', ' ', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', '#'},
+        {'#', ' ', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', '#'},
+        {'#', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#'},
+        {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
+        {'#', ' ', '#', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#'},
+        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '*', '#', '#'},
+        {'#', ' ', '#', '#', '#', '#', ' ', ' ', '#', '#', ' ', '#', '#', '#', '#', ' ', '#', '#', '*', '#'},
+        {'#', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'}
+    };
+
+    const char mapa1[20][20] = {
+        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+        {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '*', '#', ' ', '#', ' ', '#', '#', '#', ' ', ' ', '#', '#', ' ', '#', '#', '#', ' ', '#', '#'},
+        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '*', '#'},
+        {'#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#', '#'},
+        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '!', '!', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', ' ', '#', '#'},
+        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#'},
+        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#'},
+        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', ' ', ' ', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#'},
+        {'#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '*', '#', ' ', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', '#'},
+        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', '#'},
+        {'#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', ' ', '#', '#', ' ', '#', '#', '#', '#'},
+        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', '#', '#', '#', ' ', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '*', '#'},
+        {'#', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'}    
+    };
+    
+    int sorteioMapa = rand() % 2;
+
+    const char (*mapa_escolhido)[20][20];
+
+    switch (sorteioMapa){
+        case 0:
+            mapa_escolhido = &mapa0;
+            break;
+        case 1:
+            mapa_escolhido = &mapa1;
+            break;
+    }
+    
+    for (int i = 0; i < 20; i++){
+        for (int j = 0; j < 20; j++){
+            layout[i][j] = (*mapa_escolhido)[i][j];
+        }
+    }
+}
+void comando_wasd(char** layout, int* pl, int* pc, int* pontos){
+    char comando;
+    scanf ("%c", &comando);
+    //ou
+    // comando = getch();
+
+    switch (comando){
+        case 'w':
+            para_cima(layout, pl, pc, pontos);
+            break;
+        case 'a':
+            para_esquerda(layout, pl, pc, pontos);
+            break;
+        case 's':
+            para_baixo(layout, pl, pc, pontos);
+            break;
+        case 'd':
+            para_direita(layout, pl, pc, pontos);
+            break;
+        default:
+            break;                
+    }
+}
+int main () {    
+    int posicao_linha = 13;
+    int posicao_coluna = 9;
+
+    int pontuacao = 0, derrota = 0;
+
+    int *pontos = &pontuacao, *derrotou = &derrota;
+
+    int *pl = &posicao_linha, *pc = &posicao_coluna;
+
+    int inimigo_linha = 5, inimigo2_linha = 5;
+    int inimigo_coluna = 9, inimigo2_coluna = 10;
+
+    int *il = &inimigo_linha, *ic = &inimigo_coluna;
+    int *i2l = &inimigo2_linha, *i2c = &inimigo2_coluna;
+
+    char **layout = malloc(20 * sizeof(char*));
+    for (int i=0; i<20; i++){
+        layout[i] = malloc(20 * sizeof(char));
+    }
+    
+    inicializar_layout(layout);
+    while (1){
+        printf ("PEGUE TODOS OS '*' E NAO SEJA PEGO PELO '!'\n\n");
+        for (int i=0; i<20; i++){
+            for (int j=0; j<20; j++){
+                printf ("%c ", layout[i][j]);
+            }
+            printf ("\n");
+        }
+        printf ("\nPONTUACAO : %i \n", pontuacao);
+    
+    if (pontuacao == 5){
+        printf ("========VOCE GANHOU !!========");
+        break;
+    }else if (derrota == 1){
+        printf ("========VOCE PERDEU !!========");
+        break;
+    }
+    comando_wasd(layout, pl, pc, pontos);
+    movimento_inimigo(layout, il, ic, derrotou);
+    movimento_inimigo(layout, i2l, i2c, derrotou);
+    limpar_tela();
+    }
+
+    for (int i=0; i<20; i++){
+        free (layout[i]); 
+    }
+    free (layout);
+
+    return 0;
+}
